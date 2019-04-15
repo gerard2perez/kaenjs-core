@@ -1,0 +1,9 @@
+.npmignore
+.npmrc
+coverage
+node_modules
+**/*.js
+**/*.d.ts
+**/*.js.map
+!**/.gitkeep
+*.tgz

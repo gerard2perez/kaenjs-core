@@ -1,0 +1,19 @@
+{
+  "files.exclude": {
+    "node_modules": true,
+    "ember": true,
+    "models": true,
+    "controllers": true,
+    "utils": true,
+    "*.d.ts": true,
+    "**/*.js": true,
+    "**/*.map": true,
+    "*.tgz": true,
+    "headers": true,
+    "phoenix": true,
+    "package-lock.json": true,
+    "views": true,
+    "configuration": true,
+    "kaen-passport": true
+  }
+}

@@ -155,3 +155,6 @@ class KaenServer {
 	}
 }
 
+if(process.env.KAENCLI === 'true') {
+	process.on("SIGINT", code=>process.exit(0));
+}

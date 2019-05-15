@@ -1,11 +1,11 @@
 import { existsSync, readdirSync, readFileSync, statSync } from 'fs';
-import { Server } from 'http';
+import { Server, IncomingMessage, ServerResponse } from 'http';
 import { Http2SecureServer } from 'http2';
 import { Server as HTTPS_Server } from 'https';
 import './configuration';
 import { configuration } from './configuration';
 import { bodyType, KaenContext, __BaseKNCTX } from './contenxt';
-import debug, { drequest } from './debug';
+import debug from './debug';
 import { StandardResponseHeaders } from './headers';
 import { targetPath } from './utils';
 export { ErrorToHTML } from './error';
@@ -29,16 +29,18 @@ class KaenServer {
 		this.middleware.push(fn);
 		return this;
 	}
-	async callback(req, res) {
+	async callback(req:IncomingMessage, res:ServerResponse) {
+		let d = debug(req.method);
+		d(`--> ${req.url}`);
+		// drequest(`--> ${req.url}`);
 		let time = getTimeMSFloat();
-		let time2 = time;
-		let times = [];
-		res.once('close', () => {
-			time2 = Math.round((getTimeMSFloat() - time2) * 10000) / 10000;
-			drequest(`<-- ${req.url} [TTFB: ${time}] [${time2} ms]`);
-			// times.map( ([name, t1, t2]) => console.log(name, Math.round((t2 - t1) * 10000) / 10000));
-		})
-		drequest(`--> ${req.url}`);
+		// let time2 = time;
+		// let times = [];
+		// res.once('close', () => {
+		// 	time2 = Math.round((getTimeMSFloat() - time2) * 10000) / 10000;
+		// 	drequest(`<-- ${req.url} [TTFB: ${time}] [${time2} ms]`);
+		// 	// times.map( ([name, t1, t2]) => console.log(name, Math.round((t2 - t1) * 10000) / 10000));
+		// })
 		let context = new __BaseKNCTX(req, res, this.wss) as any;
 		try {
 			for (const middle of this.middleware) {
@@ -89,6 +91,7 @@ class KaenServer {
 				// context.headers[StandardResponseHeaders.TransferEncoding] = 'identity';
 				// context.headers[StandardResponseHeaders.ContentLength] = writeBody.length.toString();
 				res.end(writeBody, 'utf-8');
+				d(`<-- ${req.url} [${res.statusCode}]`);
 			};
 		} catch (ex) {
 			console.log(ex);

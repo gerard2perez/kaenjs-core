@@ -19,7 +19,8 @@ export interface ServerConfiguration {
 	name:string
 	host: string
 	port: number
-	subdomainOffset:number
+	subdomainOffset:number,
+	Keys:string[]
 	https?: {
 		key:string
 		cert:string

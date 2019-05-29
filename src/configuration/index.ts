@@ -1,8 +1,6 @@
 import { readdirSync } from "fs";
 import { ServerConfiguration } from "./server";
 import { targetPath } from "../utils";
-import { AuthenticationConfiguration } from "./authentication";
-
 class DevProdConfig {
 	[key:string] : any
 	constructor(lib:object) {
@@ -38,6 +36,7 @@ class DevProdConfig {
 	}
 }
 class Configuration {
+	[p:string]:any;
 	environment:string
 	bundles:object = {};
 	conections:object = {};
@@ -45,7 +44,6 @@ class Configuration {
 		plural: [],
 		singular: []
 	};
-	authentication:AuthenticationConfiguration = {} as AuthenticationConfiguration;
 	server:ServerConfiguration = {} as ServerConfiguration;
 	static:object = {};
 	views:object = {};

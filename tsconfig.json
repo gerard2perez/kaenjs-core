@@ -13,13 +13,13 @@
     "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames":true,
+    "forceConsistentCasingInFileNames":true
   },
   "include": [
     "src/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
+    "node_modules"
   ],
   "compileOnSave": true
 }

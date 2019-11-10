@@ -1,0 +1,4 @@
+require: ts-node/register
+spec: test/**/*.ts
+# reporter: json-stream
+# watch: true

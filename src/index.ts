@@ -116,6 +116,8 @@ class KaenServer {
 		} } = configuration;
 		let createServer = ((cert && key) ? (http2 ? require('http2').createSecureServer : require('https').createServer) : require('http').createServer);
 		process.env.KAEN_INTERNAL_SUBDOMAIN = '';
+		console.log(targetPath('./routes'));
+		process.exit(0);
 		if (existsSync(targetPath('./routes')) && statSync(targetPath('./routes')).isDirectory()) {
 			for (const file of readdirSync(targetPath('./routes'))) {
 				if (/\.map$/.exec(file) === null) {

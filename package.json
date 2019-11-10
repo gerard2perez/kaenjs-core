@@ -21,13 +21,16 @@
     "ws": "^6.2.1"
   },
   "devDependencies": {
-    "@gerard2p/vault-orm": "file:../../@gerard2p/vault-orm",
+    "@types/chai": "^4.2.4",
     "@types/cookies": "^0.7.1",
     "@types/express-session": "^1.15.12",
     "@types/inflection": "^1.5.28",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^10.0.0",
     "@types/passport": "^1.0.0",
-    "mocha": "^6.1.3",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
+    "nyc": "^14.1.1",
     "ts-node": "^8.0.3",
     "typescript": "^3.4.3"
   },

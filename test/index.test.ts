@@ -10,6 +10,9 @@ process.env.KAENCLI = 'true';
 let server:KaenServer ;
 let configuration;
 describe('demo', ()=>{
+	beforeEach(function () {
+		this.timeout(1000 * 60 * 100);
+	});
 	it('server starts', async ()=>{
 		({server} = require(resolve('./src/server')));
 		server.ready(()=>new Promise(resolve=>setTimeout(resolve,500)));

@@ -12,10 +12,7 @@ export { ErrorToHTML } from './error';
 export { HTTPVerbs } from './httpverbs';
 export { inflector } from './inflector';
 export { KaenContext, KaenServer, KaenServer as default };
-export type Middleware = (context:KaenContext, ...args:any[]) => Promise<void>
-function heartbeat() {
-	this.isAlive = true;
-}
+export type Middleware = (context: KaenContext, ...args: any[]) => Promise<void>
 export function getTimeMSFloat() {
 	var hrtime = process.hrtime();
 	return (hrtime[0] * 1000000 + hrtime[1] / 1000) / 1000;
@@ -29,7 +26,7 @@ class KaenServer {
 		this.middleware.push(fn);
 		return this;
 	}
-	async callback(req:IncomingMessage, res:ServerResponse) {
+	async callback(req: IncomingMessage, res: ServerResponse) {
 		let d = debug(req.method);
 		d(`--> ${req.url}`);
 		// drequest(`--> ${req.url}`);
@@ -54,7 +51,7 @@ class KaenServer {
 			// context.res.flushHeaders();
 			time = Math.round((getTimeMSFloat() - time) * 10000) / 10000;
 			let end = true;
-			let writeBody:string;
+			let writeBody: string;
 			switch (bodyType(context.body)) {
 				case 'html':
 				case 'string':
@@ -87,7 +84,7 @@ class KaenServer {
 					// console.log('No conocido', typeof context.body);
 					break;
 			}
-			if(end){
+			if (end) {
 				// context.headers[StandardResponseHeaders.TransferEncoding] = 'identity';
 				// context.headers[StandardResponseHeaders.ContentLength] = writeBody.length.toString();
 				res.end(writeBody, 'utf-8');
@@ -100,24 +97,13 @@ class KaenServer {
 			res.end();
 		}
 	}
-	onRequest(req, res) {
-		// detects if it is a HTTPS request or HTTP/2
-		const { socket: { alpnProtocol } } = req.httpVersion === '2.0' ?
-			req.stream.session : req;
-		res.writeHead(200, { 'content-type': 'application/json' });
-		res.end(JSON.stringify({
-			alpnProtocol,
-			httpVersion: req.httpVersion
-		}));
-	}
 	constructor() {
 		let { server: {
 			https: { http2 = false, cert = '', key = '' } = {}
 		} } = configuration;
 		let createServer = ((cert && key) ? (http2 ? require('http2').createSecureServer : require('https').createServer) : require('http').createServer);
 		process.env.KAEN_INTERNAL_SUBDOMAIN = '';
-		console.log(targetPath('./routes'));
-		process.exit(0);
+		/* istanbul ignore else */
 		if (existsSync(targetPath('./routes')) && statSync(targetPath('./routes')).isDirectory()) {
 			for (const file of readdirSync(targetPath('./routes'))) {
 				if (/\.map$/.exec(file) === null) {
@@ -127,7 +113,6 @@ class KaenServer {
 				}
 			}
 		} else {
-			console.log(targetPath('./routes'));
 			require(targetPath('./routes'));
 		}
 		let params: any[] = [];
@@ -143,23 +128,24 @@ class KaenServer {
 		this.server.on('error', (err) => console.error(err));
 		// this.setUpWSS(router);
 	}
-	ready(fn:()=>Promise<any>) {
+	ready(fn: () => Promise<any>) {
 		this.Wait = fn;
 		return this;
 	}
-	private Wait:()=>Promise<any>
+	private Wait: () => Promise<any>
 	async listen(cb?: Function) {
 		// if(!router_called)this.middleware.push(Router.execute);
 		let { server: { port = 62626 } } = configuration;
-		await this.Wait();
+		if(this.Wait)await this.Wait();
 		this.server.listen(port, () => {
 			debug(`kaen Server Listenning on port ${port}`);
 			if (cb) cb();
 		});
-
+	}
+	async close() {
+		return new Promise(resolve=>this.server.close(resolve));
 	}
 }
-
-if(process.env.KAENCLI === 'true') {
-	process.on("SIGINT", code=>process.exit(0));
+if (process.env.KAENCLI === 'true') {
+	process.on("SIGINT", code => process.exit(0));
 }

@@ -2,9 +2,9 @@ import { readdirSync } from "fs";
 import { ServerConfiguration } from "./server";
 import { targetPath } from "../utils";
 class DevProdConfig {
-	[key:string] : any
-	constructor(lib:object) {
-		for(const key of Object.getOwnPropertyNames(lib) ) {
+	[key: string]: any
+	constructor(lib: object) {
+		for (const key of Object.getOwnPropertyNames(lib)) {
 			this[key] = this.DeepDevOrProd(lib, key);
 		}
 	}
@@ -17,11 +17,11 @@ class DevProdConfig {
 	 * @param {string} prop the property to look at
 	 * @example {a:{dev:0,prod:1}} if NODE_ENV = 'productoin' -> {a:1}
 	 */
-	DeepDevOrProd (object:object, prop:string) {
+	DeepDevOrProd(object: object, prop: string) {
 		let target = object[prop];
 		if (target instanceof Array) {
 			return target;
-		} else if (typeof target === 'object' && Object.keys(target).indexOf('dev') === -1 ) {
+		} else if (typeof target === 'object' && Object.keys(target).indexOf('dev') === -1) {
 			let newobj = {};
 			for (const deep of Object.keys(target)) {
 				newobj[deep] = this.DeepDevOrProd(object[prop], deep);
@@ -36,29 +36,32 @@ class DevProdConfig {
 	}
 }
 class Configuration {
-	[p:string]:any;
-	environment:string
-	bundles:object = {};
-	conections:object = {};
+	[p: string]: any;
+	environment: string
+	bundles: object = {};
+	conections: object = {};
 	inflections = {
 		plural: [],
 		singular: []
 	};
-	server:ServerConfiguration = {} as ServerConfiguration;
-	static:object = {};
-	views:object = {};
-	constructor () {
-		this.environment = process.env.NODE_ENV === 'production' ? 'production':'development';
-		for(const file of readdirSync(targetPath('configuration'))) {
+	server: ServerConfiguration = {} as ServerConfiguration;
+	static: object = {};
+	views: object = {};
+	constructor() {
+		/* istanbul ignore next */
+		this.environment = process.env.NODE_ENV === 'production' ? 'production' : 'development';
+		for (const file of readdirSync(targetPath('configuration'))) {
 			try {
-			if(/.*\.map$/.exec(file) === null) {
-				let [lib] = file.split('.');
-				let config = require( targetPath('configuration', file)).default;
-				this[lib] = new DevProdConfig(config);
+				/* istanbul ignore else */
+				if (/.*\.map$/.exec(file) === null) {
+					let [lib] = file.split('.');
+					let config = require(targetPath('configuration', file)).default;
+					this[lib] = new DevProdConfig(config);
+				}
+			} catch (ex) {
+				/* istanbul ignore next */
+				console.log(ex);
 			}
-		}catch(ex) {
-			console.log(ex);
-		}
 		}
 		this.server.subdomains = this.server.subdomains || [];
 	}

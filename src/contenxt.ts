@@ -82,7 +82,6 @@ export class __BaseKNCTX<T=any> {
 	finished: boolean = false
 	private _body: any;
 	type: MimeType = MimeType.text
-	ws: WebsocketServer
 	params: KaenExtensible.KaenParameters
 	cookies: Cookies
 	get body() {
@@ -116,7 +115,6 @@ export class __BaseKNCTX<T=any> {
 				break;
 			default:
 				this.res.statusCode = 404;
-				console.log('No conocido');
 				break;
 		}
 		this._body = data;
@@ -133,7 +131,6 @@ export class __BaseKNCTX<T=any> {
 	headers: StandardRequestHeaders | StandardResponseHeaders | NonStandardRequestHeaders | NonStandardResponseHeaders
 	constructor(req: IncomingMessage, res: ServerResponse, wss: any) {
 		this.domain = req.headers.host || req.headers[':authority'] as string;
-		this.ws = new WebsocketServer(wss);
 		let parsed = parse(req.url, true, true);
 		this.params = {
 			query: parsed.query,
@@ -165,7 +162,7 @@ export class __BaseKNCTX<T=any> {
 		// this.res.end();
 	}
 	accepts(...mime_types:string[]) {
-		let types = parseWithQValues(this.req.headers[StandardRequestHeaders.Accept]);
+		let types = parseWithQValues(this.headers[StandardRequestHeaders.Accept]);
 		let lookfor = mime_types.map(m=>m.split('/')).reduce((prev, current)=>{
 			prev[current[0]] = prev[current[0]] || [];
 			prev[current[0]].push(current[1]);
@@ -174,26 +171,12 @@ export class __BaseKNCTX<T=any> {
 		for(const mime of types) {
 			let [cat, type] = mime.split('/');
 			if(lookfor[cat]) {
-				if(lookfor[cat].includes(type) || lookfor[cat].includes('*')) {
+				if(lookfor[cat].includes(type) || type ==='*') {
 					return mime;
 				}
 			}
 		}
 		return false;
-	}
-}
-export class WebsocketServer {
-	private server: any
-	constructor(wss: any) {
-		this.server = wss;
-	}
-	broadcast(channel: string, message: any) {
-		this.server.clients.forEach(function each(client) {
-			//@ts-ignore
-			if (client.readyState === WebSocket.OPEN) {
-				client.send(JSON.stringify({ channel, message }));
-			}
-		});
 	}
 }
 interface KKC<T> extends __BaseKNCTX<T>, KaenExtensible.KaenContext { }

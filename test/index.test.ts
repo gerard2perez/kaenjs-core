@@ -9,7 +9,7 @@ process.chdir('./demo-project');
 process.env.KAENCLI = 'true';
 let server:KaenServer ;
 let configuration;
-describe('demo', ()=>{
+describe('demo', function(){
 	beforeEach(function () {
 		this.timeout(1000 * 60 * 100);
 	});

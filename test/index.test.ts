@@ -109,7 +109,7 @@ describe('demo', ()=>{
 				accept: 'text/html, application/xhtml+xml, application/json;q=1, */*;q=0.8'
 			}
 		});
-		expect(headers).to.have.property('content-type').equals('text/hml');
+		expect(headers).to.have.property('content-type').equals('text/html');
 	});
 
 

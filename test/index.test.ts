@@ -22,7 +22,7 @@ describe('demo', function(){
 		toXMl({hi:true});
 		targetPath('r');
 		expect(true).to.be.equal(true);
-	});
+	}).timeout(1000 * 60 * 100);
 	it('test some utils', async ()=>{
 		toXMl({hi:true});
 		toXMl({hi:[{value:1},{value:2},{value:3}]});

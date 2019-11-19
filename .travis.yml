@@ -25,7 +25,7 @@ before_install:
   - npm install -g semantic-release
   - npm install -g codeclimate-test-reporter
 install:
-  - npm i .
+  - npm ci
 script:
   - npm run cover
 after_success:
